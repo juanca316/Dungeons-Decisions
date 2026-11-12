@@ -1,5 +1,6 @@
 package com.example.ui
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.MenuBook
@@ -53,6 +55,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -112,9 +116,18 @@ fun DungeonsMainScreen(
     val isMuted by audioManager.isMuted.collectAsStateWithLifecycle()
     val currentTrack by audioManager.currentTrack.collectAsStateWithLifecycle()
     val lastPlayedSfx by soundEffectManager.lastPlayedSoundEffect.collectAsStateWithLifecycle()
+    val sfxVolume by soundEffectManager.sfxVolume.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     var showSoundtrackDialog by remember { mutableStateOf(false) }
+
+    val tutorialPrefs = remember(context) {
+        context.getSharedPreferences("dungeons_decisions_tutorial_prefs", Context.MODE_PRIVATE)
+    }
+    var showTutorialPromptDialog by remember {
+        mutableStateOf(!tutorialPrefs.getBoolean("has_answered_tutorial_prompt", false))
+    }
+    var showTutorialOverlay by remember { mutableStateOf(false) }
 
     // Escuchar eventos de efectos de sonido (botón de decisión, log de eventos, tirada de dados, etc.)
     LaunchedEffect(viewModel, soundEffectManager) {
@@ -191,8 +204,10 @@ fun DungeonsMainScreen(
     }
 
     BackHandler(
-        enabled = uiState.selectedTab != MainTab.AVENTURA ||
-            uiState.phase != AdventurePhase.WELCOME_PLAYER_COUNT
+        enabled = !showTutorialOverlay && (
+            uiState.selectedTab != MainTab.AVENTURA ||
+                uiState.phase != AdventurePhase.WELCOME_PLAYER_COUNT
+            )
     ) {
         if (uiState.selectedTab != MainTab.AVENTURA) {
             viewModel.selectTab(MainTab.AVENTURA)
@@ -237,6 +252,28 @@ fun DungeonsMainScreen(
                     }
                 },
                 actions = {
+                    // Botón de ayuda siempre visible para abrir el Tutorial Interactivo
+                    IconButton(
+                        onClick = {
+                            tutorialPrefs.edit().putBoolean("has_answered_tutorial_prompt", true).apply()
+                            showTutorialPromptDialog = false
+                            showTutorialOverlay = true
+                            soundEffectManager.playSound(SoundEffect.DECISION_BUTTON_PRESS)
+                        },
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(ArcaneSurfaceVariant.copy(alpha = 0.85f))
+                            .testTag("top_bar_tutorial_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.HelpOutline,
+                            contentDescription = "Tutorial interactivo y reglas del juego",
+                            tint = ImperialGoldLight
+                        )
+                    }
+
                     // Botón de selector de estilo musical (Barroco, Medieval, Fantasía, Suspenso, Tensión) y Lyria
                     IconButton(
                         onClick = { showSoundtrackDialog = true },
@@ -410,7 +447,13 @@ fun DungeonsMainScreen(
                                 onSelectCount = viewModel::selectPlayerCount,
                                 onSelectPaceMode = viewModel::selectPaceMode,
                                 onContinueToPartySetup = viewModel::proceedToPartyForge,
-                                onQuickStartAdventure = viewModel::quickStartAdventureWithCount
+                                onQuickStartAdventure = viewModel::quickStartAdventureWithCount,
+                                onOpenTutorial = {
+                                    tutorialPrefs.edit().putBoolean("has_answered_tutorial_prompt", true).apply()
+                                    showTutorialPromptDialog = false
+                                    showTutorialOverlay = true
+                                    soundEffectManager.playSound(SoundEffect.DECISION_BUTTON_PRESS)
+                                }
                             )
                         }
                         AdventurePhase.PARTY_FORGE -> {
@@ -444,7 +487,10 @@ fun DungeonsMainScreen(
                                 onSubmitCustomAction = viewModel::submitCustomAction,
                                 onConcludeAndSave = viewModel::concludeAndSaveChronicle,
                                 onNewAdventure = viewModel::resetToWelcome,
-                                onTriggerEventLogSound = viewModel::triggerEventLogSound
+                                onTriggerEventLogSound = viewModel::triggerEventLogSound,
+                                onTriggerProblemCardSound = { step ->
+                                    soundEffectManager.playProblemCardRevealed(step)
+                                }
                             )
                         }
                         AdventurePhase.CAMPAIGN_EPILOGUE -> {
@@ -477,10 +523,12 @@ fun DungeonsMainScreen(
         SoundtrackAndLyriaModal(
             currentTrack = currentTrack,
             isMuted = isMuted,
+            sfxVolume = sfxVolume,
             isGeneratingLyria = uiState.isGeneratingLyriaMusic,
             onSelectTrack = { track -> audioManager.playTrack(track) },
             onPlaySoundEffect = { sfx -> soundEffectManager.playSound(sfx) },
             onPlayNarrativeEvent = { eventType -> soundEffectManager.playNarrativeEvent(eventType) },
+            onChangeSfxVolume = { vol -> soundEffectManager.setVolume(vol) },
             onToggleMute = {
                 val muted = audioManager.toggleMute()
                 soundEffectManager.setMuted(muted)
@@ -497,6 +545,29 @@ fun DungeonsMainScreen(
             onDismiss = { showSoundtrackDialog = false }
         )
     }
+
+    if (showTutorialPromptDialog && !showTutorialOverlay) {
+        TutorialPromptDialog(
+            onAcceptTutorial = {
+                tutorialPrefs.edit().putBoolean("has_answered_tutorial_prompt", true).apply()
+                showTutorialPromptDialog = false
+                showTutorialOverlay = true
+                soundEffectManager.playSound(SoundEffect.DECISION_BUTTON_PRESS)
+            },
+            onDeclineTutorial = {
+                tutorialPrefs.edit().putBoolean("has_answered_tutorial_prompt", true).apply()
+                showTutorialPromptDialog = false
+            }
+        )
+    }
+
+    if (showTutorialOverlay) {
+        InteractiveGameTutorialOverlay(
+            onCloseTutorial = { showTutorialOverlay = false },
+            onPlaySoundEffect = { sfx -> soundEffectManager.playSound(sfx) },
+            onPlayCardRevealSound = { step -> soundEffectManager.playProblemCardRevealed(step) }
+        )
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -504,10 +575,12 @@ fun DungeonsMainScreen(
 private fun SoundtrackAndLyriaModal(
     currentTrack: BgmTrack?,
     isMuted: Boolean,
+    sfxVolume: Float,
     isGeneratingLyria: Boolean,
     onSelectTrack: (BgmTrack) -> Unit,
     onPlaySoundEffect: (SoundEffect) -> Unit,
     onPlayNarrativeEvent: (NarrativeEventType) -> Unit,
+    onChangeSfxVolume: (Float) -> Unit,
     onToggleMute: () -> Unit,
     onGenerateLyriaTrack: (BgmTrack, String, Boolean) -> Unit,
     onDismiss: () -> Unit
@@ -640,10 +713,58 @@ private fun SoundtrackAndLyriaModal(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "Efectos de Sonido de Fantasía (Decisión, Log y Dados):",
+                    text = "Efectos de Sonido (SFX — SoundPool Android):",
                     style = MaterialTheme.typography.labelLarge,
                     color = ImperialGoldLight
                 )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Volumen SFX (${(sfxVolume * 100).toInt()}%)",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = ParchmentMuted
+                    )
+                    Slider(
+                        value = sfxVolume,
+                        onValueChange = onChangeSfxVolume,
+                        valueRange = 0f..1f,
+                        colors = SliderDefaults.colors(
+                            thumbColor = ImperialGold,
+                            activeTrackColor = ImperialGold
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("sfx_volume_slider")
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedButton(
+                        onClick = { onPlaySoundEffect(SoundEffect.PROBLEM_CARD_REVEALED) },
+                        border = BorderStroke(1.dp, ImperialGold),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("sfx_preview_problem_card_reveal")
+                    ) {
+                        Text("🃏 Tarjeta", style = MaterialTheme.typography.labelMedium, color = ImperialGoldLight)
+                    }
+                    OutlinedButton(
+                        onClick = { onPlaySoundEffect(SoundEffect.TUTORIAL_COMPLETED) },
+                        border = BorderStroke(1.dp, ImperialGold),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag("sfx_preview_tutorial_completed")
+                    ) {
+                        Text("🎓 Fin Tutorial", style = MaterialTheme.typography.labelMedium, color = ImperialGoldLight)
+                    }
+                }
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),

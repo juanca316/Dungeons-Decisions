@@ -809,6 +809,14 @@ class DungeonsViewModel(
         _soundEffectEvents.tryEmit(SoundEffect.DECISION_BUTTON_PRESS)
     }
 
+    fun triggerProblemCardRevealedSound() {
+        _soundEffectEvents.tryEmit(SoundEffect.PROBLEM_CARD_REVEALED)
+    }
+
+    fun triggerTutorialCompletedSound() {
+        _soundEffectEvents.tryEmit(SoundEffect.TUTORIAL_COMPLETED)
+    }
+
     fun concludeAndSaveChronicle() {
         val state = _uiState.value
         _soundEffectEvents.tryEmit(SoundEffect.DILEMMA_RESOLVED)

@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -122,6 +123,7 @@ fun WelcomePlayerCountScreen(
     onSelectPaceMode: (GamePaceMode) -> Unit,
     onContinueToPartySetup: (Int) -> Unit,
     onQuickStartAdventure: (Int) -> Unit,
+    onOpenTutorial: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -593,6 +595,51 @@ fun WelcomePlayerCountScreen(
                         text = "Inicio Rápido",
                         style = MaterialTheme.typography.labelLarge
                     )
+                }
+
+                Surface(
+                    onClick = onOpenTutorial,
+                    shape = RoundedCornerShape(16.dp),
+                    color = ArcaneSurface,
+                    border = BorderStroke(1.dp, SapphireOrder.copy(alpha = 0.65f)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("open_tutorial_welcome_button")
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.School,
+                            contentDescription = null,
+                            tint = SapphireOrder,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Tutorial Interactivo de Mecánicas",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = ImperialGoldLight
+                            )
+                            Text(
+                                text = "Guía completa para principiantes + simulador de turno",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = ParchmentMuted
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            tint = SapphireOrder,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 }
             }
         }

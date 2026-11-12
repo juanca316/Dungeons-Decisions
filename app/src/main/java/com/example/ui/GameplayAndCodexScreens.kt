@@ -116,6 +116,7 @@ fun ActiveTabletopScreen(
     onConcludeAndSave: () -> Unit,
     onNewAdventure: () -> Unit,
     onTriggerEventLogSound: () -> Unit = {},
+    onTriggerProblemCardSound: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val payload = uiState.currentTurnPayload
@@ -455,7 +456,7 @@ fun ActiveTabletopScreen(
                         currentEvent = uiState.currentNarrativeEvent,
                         moralScores = uiState.moralScores,
                         voterCount = uiState.players.size,
-                        onAdvanceStepSound = onTriggerEventLogSound
+                        onAdvanceStepSound = onTriggerProblemCardSound
                     )
                 }
             }
@@ -689,7 +690,7 @@ fun ActiveTabletopScreen(
  * 1. Problema -> 2. Solución -> 3. Tiro D20 -> 4. Resultado -> 5. Stats
  */
 @Composable
-private fun TurnFiveStepOrderBanner(
+internal fun TurnFiveStepOrderBanner(
     currentStep: Int,
     hasSelectedOption: Boolean,
     isDiceLocked: Boolean,

@@ -313,7 +313,7 @@ fun RemodeledProblemPresentationCard(
     currentEvent: NarrativeEventType,
     moralScores: MoralScores,
     voterCount: Int,
-    onAdvanceStepSound: () -> Unit = {},
+    onAdvanceStepSound: (Int) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val presentation = remember(turnNumber, payload.chapterTitle, payload.narrativeText, payload.ethicalQuestion, payload.isStoryConcluded) {
@@ -337,7 +337,7 @@ fun RemodeledProblemPresentationCard(
     fun advanceStep() {
         if (revealedStepCount < 3) {
             revealedStepCount += 1
-            onAdvanceStepSound()
+            onAdvanceStepSound(revealedStepCount)
         }
     }
 
@@ -393,7 +393,7 @@ fun RemodeledProblemPresentationCard(
                         .clip(RoundedCornerShape(50))
                         .clickable {
                             revealedStepCount = if (revealedStepCount < 3) 3 else 1
-                            onAdvanceStepSound()
+                            onAdvanceStepSound(revealedStepCount)
                         }
                         .testTag("problem_reveal_all_toggle")
                 ) {
@@ -438,7 +438,7 @@ fun RemodeledProblemPresentationCard(
                     currentRevealed = revealedStepCount,
                     onSelectStep = { targetStep ->
                         revealedStepCount = targetStep
-                        onAdvanceStepSound()
+                        onAdvanceStepSound(targetStep)
                     }
                 )
             }
