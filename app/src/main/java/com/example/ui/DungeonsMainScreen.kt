@@ -26,15 +26,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Explore
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.outlined.AutoStories
 import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.outlined.MenuBook
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -309,9 +309,9 @@ fun DungeonsMainScreen(
                     ) {
                         Icon(
                             imageVector = if (isMuted) {
-                                Icons.Default.VolumeOff
+                                Icons.AutoMirrored.Filled.VolumeOff
                             } else {
-                                Icons.Default.VolumeUp
+                                Icons.AutoMirrored.Filled.VolumeUp
                             },
                             contentDescription = if (isMuted) {
                                 "Activar música ambiental"
@@ -403,9 +403,9 @@ fun DungeonsMainScreen(
                     icon = {
                         Icon(
                             imageVector = if (uiState.selectedTab == MainTab.CODICE) {
-                                Icons.Filled.MenuBook
+                                Icons.AutoMirrored.Filled.MenuBook
                             } else {
-                                Icons.Outlined.MenuBook
+                                Icons.AutoMirrored.Outlined.MenuBook
                             },
                             contentDescription = stringResource(R.string.codex_tab)
                         )

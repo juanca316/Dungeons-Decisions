@@ -41,7 +41,7 @@ enum class NarrativeEventType(
 }
 
 enum class SoundEffect(
-    @RawRes val resId: Int,
+    @param:RawRes val resId: Int,
     val emoji: String,
     val titleEs: String,
     val descriptionEs: String

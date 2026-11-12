@@ -37,6 +37,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Balance
@@ -49,14 +51,12 @@ import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.ViewInAr
-import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -538,7 +538,7 @@ private fun TutorialChapterAppOverview() {
                 )
                 HorizontalDivider(color = ParchmentBorder.copy(alpha = 0.45f))
                 TutorialInfoRow(
-                    icon = Icons.Default.MenuBook,
+                    icon = Icons.AutoMirrored.Filled.MenuBook,
                     iconColor = AmethystWisdom,
                     title = "Códice (Enciclopedia Ética)",
                     description = "Consulta el significado filosófico de las razas, vocaciones, pilares éticos y las medallas de virtud que puedes desbloquear."
@@ -560,7 +560,7 @@ private fun TutorialChapterAppOverview() {
                 )
                 HorizontalDivider(color = ParchmentBorder.copy(alpha = 0.45f))
                 TutorialInfoRow(
-                    icon = Icons.Default.VolumeUp,
+                    icon = Icons.AutoMirrored.Filled.VolumeUp,
                     iconColor = EmeraldVirtue,
                     title = "Silenciar / Activar Audio",
                     description = "Activa o silencia en un toque tanto la música ambiental como los efectos de sonido de decisiones, log de eventos y tiradas."

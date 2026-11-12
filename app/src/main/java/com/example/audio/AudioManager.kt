@@ -15,7 +15,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 enum class BgmTrack(
-    @RawRes val resId: Int,
+    @param:RawRes val resId: Int,
     val genreTagEs: String,
     val titleEs: String,
     val descriptionEs: String,

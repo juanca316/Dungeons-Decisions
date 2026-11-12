@@ -29,12 +29,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.RestartAlt
-import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -242,7 +242,7 @@ fun EthicalRadarChart(
                         border = BorderStroke(1.dp, ImperialGold)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ShowChart,
+                            imageVector = Icons.AutoMirrored.Filled.ShowChart,
                             contentDescription = null,
                             tint = ImperialGold,
                             modifier = Modifier
