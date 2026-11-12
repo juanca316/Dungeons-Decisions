@@ -1,0 +1,6 @@
+{
+  "name": "Dungeons & Decisions",
+  "description": "Aventura interactiva de rol ético y toma de decisiones para 1 a 6 jugadores.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

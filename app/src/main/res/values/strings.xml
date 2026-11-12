@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Dungeons &amp; Decisions</string>
+    <string name="welcome_subtitle">¡Bienvenidos a la aventura ética!</string>
+    <string name="how_many_players">¿Cuántos jugadores van a participar hoy?</string>
+    <string name="player_count_hint">Indica un número de 1 a 6</string>
+    <string name="configure_party_title">Forja tu Grupo de Aventureros</string>
+    <string name="campaign_theme_label">Reino y Escenario Ético</string>
+    <string name="start_adventure_btn">Comenzar la Aventura</string>
+    <string name="dm_master_label">Dungeon Master Ético</string>
+    <string name="roll_d20_btn">Tirar D20 de Destino</string>
+    <string name="custom_action_hint">Escribe otra decisión o argumento ético del grupo…</string>
+    <string name="send_action_desc">Enviar decisión</string>
+    <string name="new_campaign_btn">Nueva Partida</string>
+    <string name="chronicles_tab">Crónicas</string>
+    <string name="adventure_tab">Aventura</string>
+    <string name="codex_tab">Códice Ético</string>
+    <string name="moral_compass_title">Brújula Moral del Grupo</string>
+    <string name="empty_chronicles_title">Aún no hay crónicas escritas</string>
+    <string name="empty_chronicles_subtitle">Completa o guarda una sesión en la mesa de juego para inmortalizar las decisiones de tu grupo.</string>
+    <string name="api_security_notice">Modo Prototipo: Conexión directa a Gemini REST API activa (con motor narrativo local de respaldo).</string>
+</resources>
